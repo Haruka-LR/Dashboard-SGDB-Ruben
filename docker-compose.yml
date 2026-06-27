@@ -1,0 +1,148 @@
+ 
+services:
+  # -----------------------------------------------------------
+  # 1. MySQL
+  # -----------------------------------------------------------
+  mysql:
+    image: mysql:latest
+    container_name: db_mysql_container
+    restart: "no"
+    environment:
+      # La imagen oficial de MySQL no permite cambiar el nombre 
+      # del superusuario raíz mediante variables de entorno; siempre es 'root'.
+      MYSQL_ROOT_PASSWORD: "M@1uU$312-DB"
+      TZ: "America/Mexico_City"
+    volumes:
+      - ./mysql/data/:/var/lib/mysql/:Z
+      - ./mysql/shared/:/shared/:Z
+    networks:
+      db_net:
+        ipv4_address: 10.10.0.2
+    ports:
+      - "3308:3306"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+ 
+# -----------------------------------------------------------
+  # 2. SQL Server
+  # -----------------------------------------------------------
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver_container
+    restart: "no"
+    user: "0:0"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Password123!"
+      MSSQL_PID: "Developer"
+      MSSQL_DATA_DIR: "/var/opt/sqlserver/data"
+      MSSQL_LOG_DIR: "/var/opt/sqlserver/log"
+      MSSQL_BACKUP_DIR: "/var/opt/sqlserver/backup"
+    volumes:
+      - ./sqlserver/data/:/var/opt/sqlserver/data/:Z
+      - ./sqlserver/log/:/var/opt/sqlserver/log/:Z
+      - ./sqlserver/backup/:/var/opt/sqlserver/backup/:Z
+      - ./sqlserver/mssql-system/:/var/opt/mssql/:Z
+      - ./sqlserver/shared/:/shared/:Z
+    networks:
+      db_net:
+        ipv4_address: 10.10.0.3
+    ports:
+      - "1433:1433"
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+ 
+  # -----------------------------------------------------------
+  # 3. PostgreSQL
+  # -----------------------------------------------------------
+  postgresql:
+    image: postgres:17
+    container_name: postgresql_container
+    restart: "no"
+    environment:
+      # Soportado: Permite definir un superusuario personalizado
+      POSTGRES_USER: "USUARIOPRINCIPAL"
+      POSTGRES_PASSWORD: "root"
+      TZ: "America/Mexico_City"
+      POSTGRES_DB: "imdb_db"
+    volumes:
+      # PostgreSQL 18+ requiere montar el volumen en la raíz /var/lib/postgresql/
+      - ./postgresql/pg_data/:/var/lib/postgresql/:Z
+      - ./postgresql/shared/:/shared/:Z
+    networks:
+      db_net:
+        ipv4_address: 10.10.0.4
+    ports:
+      - "5433:5432"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+ 
+  # -----------------------------------------------------------
+  # 4. MongoDB
+  # -----------------------------------------------------------
+  mongodb:
+    image: mongo:4.4
+    container_name: mongodb_container
+    restart: "no"
+    environment:
+      # Soportado: Permite definir el usuario raíz administrativo
+      MONGO_INITDB_ROOT_USERNAME: "USUARIOPRINCIPAL"
+      MONGO_INITDB_ROOT_PASSWORD: "root"
+    volumes:
+      - ./mongodb/data/:/data/db/:Z
+      - ./mongodb/shared/:/shared/:Z
+    networks:
+      db_net:
+        ipv4_address: 10.10.0.5
+    ports:
+      - "27017:27017"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+ 
+  # -----------------------------------------------------------
+  # 5. Cassandra
+  # -----------------------------------------------------------
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra_container
+    restart: "no"
+    environment:
+      # La imagen de Cassandra inicializa con el usuario 'cassandra' 
+      # y contraseña 'cassandra' por defecto. El cambio de credenciales administrativas 
+      # debe realizarse post-instalación mediante comandos CQL (cqlsh).
+      CASSANDRA_CLUSTER_NAME: "Clase_SGBD"
+      # Restricción explícita de memoria para la Máquina Virtual de Java
+      MAX_HEAP_SIZE: "1G"
+      HEAP_NEWSIZE: "256M"
+    volumes:
+      - ./cassandra/data/:/var/lib/cassandra/:Z
+      - ./cassandra/shared/:/shared/:Z
+    networks:
+      db_net:
+        ipv4_address: 10.10.0.6
+    ports:
+      - "9042:9042"
+    deploy:
+      resources:
+        limits:
+          # Cassandra es pesada con Java, pero 1GB es suficiente para consultas básicas.
+          memory: 2G
+ 
+# =============================================================
+# Configuración de la Red Personalizada
+# =============================================================
+networks:
+  db_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+          gateway: 10.10.0.1

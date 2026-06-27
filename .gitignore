@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+*.tsv
+*.gz
+*.zip
+datasets_limpios/
+
+postgresql/data/
+postgresql/pg_data/
+mysql/data/
+mysql/shared/
+sqlserver/
+mongodb/data/
+cassandra/data/
