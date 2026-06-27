@@ -51,9 +51,9 @@ def ejecutar_pipeline():
         
         if ya_procesado:
             print("\n🔍 [INFO] Se detectó que las tablas definitivas ya contienen los datos estandarizados.")
-            print("⏩ Saltando la fase de procesamiento y carga masiva...")
+            print(" Saltando la fase de procesamiento y carga masiva...")
         else:
-            print("\n🔄 No se detectaron todas las tablas limpias. Iniciando procesamiento masiva...")
+            print("\n No se detectaron todas las tablas limpias. Iniciando procesamiento masiva...")
             
             # =====================================================================
             # 1. PROCESAMIENTO DE LA TABLA: name.basics.tsv
@@ -103,7 +103,7 @@ def ejecutar_pipeline():
                 ON CONFLICT DO NOTHING;
             """)
             cursor.execute("DROP TABLE IF EXISTS staging_name_basics;")
-            print("   ✅ Tabla 'name.basics' estandarizada con éxito.")
+            print("   Tabla 'name.basics' estandarizada con éxito.")
 
             # =====================================================================
             # 2. PROCESAMIENTO DE LA TABLA: title.basics.tsv
@@ -150,7 +150,7 @@ def ejecutar_pipeline():
                 ON CONFLICT DO NOTHING;
             """)
             cursor.execute("DROP TABLE IF EXISTS staging_title_basics;")
-            print("   ✅ Tabla 'title.basics' estandarizada con éxito.")
+            print("  Tabla 'title.basics' estandarizada con éxito.")
 
             # =====================================================================
             # 3. PROCESAMIENTO DE LA TABLA: title.principals.tsv
@@ -184,7 +184,7 @@ def ejecutar_pipeline():
                 FROM staging_title_principals ON CONFLICT DO NOTHING;
             """)
             cursor.execute("DROP TABLE IF EXISTS staging_title_principals;")
-            print("   ✅ Tabla 'title.principals' estandarizada con éxito.")
+            print("   Tabla 'title.principals' estandarizada con éxito.")
 
         # Cerrar cursores antes de lanzar comandos del sistema
         cursor.close()
@@ -193,7 +193,7 @@ def ejecutar_pipeline():
         # =====================================================================
         # 4. ETAPA AUTOMÁTICA DE COMPRESIÓN (EXPORTACIÓN ORO)
         # =====================================================================
-        print("\n📦 Iniciando fase de exportación y compresión masiva...")
+        print("\n Iniciando fase de exportación y compresión masiva...")
         
         ruta_salida = os.path.expanduser("~/Documentos/Universidad/Ruben 8vo/datasets_limpios")
         os.makedirs(ruta_salida, exist_ok=True)  # <-- CORREGIDO: exist_ok=True listo!
@@ -204,11 +204,11 @@ def ejecutar_pipeline():
             subprocess.run(comando, shell=True, check=True)
             
         end_total = time.time()
-        print(f"\n🎉 ¡Pipeline Completado con Éxito en {round(end_total - start_total, 2)} segundos!")
-        print(f"📂 Tus 5 archivos optimizados (.csv.gz) te esperan listos en:\n   {ruta_salida}")
+        print(f"\n ¡Pipeline Completado con Éxito en {round(end_total - start_total, 2)} segundos!")
+        print(f" Tus 5 archivos optimizados (.csv.gz) te esperan listos en:\n   {ruta_salida}")
 
     except Exception as e:
-        print(f"\n❌ Error crítico durante la ejecución del pipeline: {e}")
+        print(f"\n Error crítico durante la ejecución del pipeline: {e}")
 
 if __name__ == "__main__":
     ejecutar_pipeline()

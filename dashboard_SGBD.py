@@ -5,19 +5,18 @@ import pandas as pd
 import plotly.express as px
 import os
 
-# Configuración de página de Streamlit
+
 st.set_page_config(page_title="SGBD Security & Monitor Dashboard", layout="wide")
 st.title("Panel de Control de SGBD y Monitoreo de Recursos")
 st.write("Materia: Administración de Base de Datos | Grupo: IDS-801")
 
-# Conectar con el Socket de Docker nativo de tu Ubuntu
+
 try:
     client = docker.from_env()
 except Exception as e:
     st.error(f"Error al conectar con Docker. Asegúrate de que el servicio esté activo: {e}")
     st.stop()
 
-# MAPEO DE SERVICIOS Y CONTENEDORES REALES (Según tu docker-compose.yml)
 MOTORES = {
     "postgresql": ("PostgreSQL (IMDb Core)", "postgresql_container"),
     "mysql": ("MySQL", "db_mysql_container"),
@@ -26,7 +25,6 @@ MOTORES = {
     "cassandra": ("Cassandra (NoSQL)", "cassandra_container")
 }
 
-# --- SECCIÓN 1: SWITCHES Y CONTROL DE CONTENEDORES ---
 st.header("Control de Contenedores (SGBD)")
 
 col_btn1, col_btn2 = st.columns(2)
@@ -68,7 +66,6 @@ for index, (service_name, (display_name, container_real_name)) in enumerate(MOTO
 
 st.markdown("---")
 
-# --- SECCIÓN 2: MONITOREO DE RECURSOS ---
 st.header(" Consumo de Recursos en Tiempo Real")
 
 stats_data = []
