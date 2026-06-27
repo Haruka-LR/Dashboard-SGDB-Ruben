@@ -6,6 +6,8 @@
 **Grupo:** IDS-801
 **Docente:** Ing. Rubén Ramírez Gómez
 **Fecha:** Junio, 2026
+**Alumnos:** 203110350 Perez Cesar Silverio, 233110289 Camara Torres Oscar Leonardo.
+**ALumnos:** 233110025 Romero JImenez Dayron Oswaldo, 223110283 Herrera Hernandez Diego
 
 ## Objetivo del Proyecto
 Diseñar, implementar y documentar un monitor centralizado interactivo desarrollado en **Python / Streamlit** para Visualizar en tiempo real el consumo de recursos (CPU, RAM y Almacenamiento en Disco) de cinco Sistemas de Gestión de Bases de Datos (SGBD) corriendo de forma aislada en contenedores distribuidos de **Docker**. 
